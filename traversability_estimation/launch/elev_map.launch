@@ -1,0 +1,15 @@
+<launch>
+  <!-- Launch point cloud segmentation node -->
+  <include file="$(find linefit_ground_segmentation_ros)/launch/segmentation.launch" />
+  <!-- Convert odometry messages to geometry pose stamped -->
+  <node name="pose_publisher" pkg="traversability_estimation" type="Odom2PoseStamped.py" output="screen">
+    <param name="pose_topic_name" value="H01_pose_stamped" />
+    <param name="odom_topic" value="/lio_sam/mapping/odometry" />
+  </node>
+  <!-- Launch elevation mapping node -->
+  <node pkg="elevation_mapping" type="elevation_mapping" name="elevation_mapping" output="screen">
+		<rosparam command="load" file="$(find traversability_estimation)/config/elev_map_parameters.yaml" />
+	</node>
+  <!-- Launch RViz -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find traversability_estimation)/rviz/husky_pc_viewer.rviz" />  -->
+</launch>

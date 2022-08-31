@@ -1,0 +1,37 @@
+<launch>
+  <env name="ROSCONSOLE_CONFIG_FILE" value="$(find traversability_estimation)/config/rosconsole.conf"/>
+  <!-- Play bag -->
+  <arg name="bag_dir" default="/media/daniel/T7/husky_driver_bags" />
+  <arg name="bag_file" default="husky_edgar_odom_and_pc_2021-08-29-00-35-47.bag" />
+  <arg name="start_time" default="20" />
+  <node pkg="rosbag" type="play" name="bag_player" args="-s $(arg start_time) $(arg bag_dir)/$(arg bag_file)" />
+  <!-- Launch elevation mapping -->
+  <include file="$(find traversability_estimation)/launch/elev_map.launch" />
+
+  <!-- Launch traversability estimation node -->
+  <param name="elevation_map_topic" value="/elevation_mapping/elevation_map" />
+  <param name="obstacle_PC_topic" value="/ground_segmentation/obstacle_cloud" />
+  <param name="filter_chain_parameter_name" value="" />
+  
+  <rosparam command="load" file="$(find traversability_estimation)/config/robot_filter_parameter.yaml" />
+  <node name="rough_trav_node" pkg="traversability_estimation" type="rough_terrain_trav_node" output="screen">
+  </node>
+
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="traversability_map_visualization" output="screen">
+	  <rosparam command="load" file="$(find traversability_estimation)/config/visualization/traversability.yaml"/>
+  </node>
+
+  <!-- Launch RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find traversability_estimation)/rviz/rough_terrain_trav.rviz" /> 
+
+  <!-- Record bags -->
+  <!-- <arg name="out_dir" default="/home/daniel/example_ws/src/husky_driver/bags" />
+  <arg name="out_file" default="husky_edgar_2021_08_29_trav.bag" />
+  <node pkg="rosbag" type="record" name="husky_outputs" args="record -o $(arg out_dir)/$(arg out_file)
+    /elevation_mapping/elevation_map
+    /H01_pose_stamped
+    /ground_segmentation/ground_cloud
+    /ground_segmentation/obstacle_cloud
+    /tf
+    /tf_static" /> -->
+</launch>

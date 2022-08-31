@@ -85,29 +85,18 @@ include_directories(
 )
 
 ## Declare a cpp library
-add_library(
-  ${PROJECT_NAME}
-  src/TraversabilityMap.cpp
-)
-
-target_link_libraries(
-  ${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
+add_library(${PROJECT_NAME} src/TraversabilityMap.cpp)
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 
 ## Declare a cpp executable
-add_executable(
-  ${PROJECT_NAME}_node
-  src/traversability_estimation_node.cpp
-  src/TraversabilityEstimation.cpp
-)
+add_executable(${PROJECT_NAME}_node src/traversability_estimation_node.cpp src/TraversabilityEstimation.cpp)
+target_link_libraries(${PROJECT_NAME}_node ${catkin_LIBRARIES} ${PROJECT_NAME})
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(
-  ${PROJECT_NAME}_node
-  ${catkin_LIBRARIES}
-  ${PROJECT_NAME}
-)
+add_library(rough_terrain_trav src/RoughTerrainTrav.cpp)
+target_link_libraries(rough_terrain_trav ${catkin_LIBRARIES}) 
+
+add_executable(rough_terrain_trav_node src/rough_terrain_trav_node.cpp)
+target_link_libraries(rough_terrain_trav_node rough_terrain_trav ${catkin_LIBRARIES}) 
 
 #############
 ## Install ##

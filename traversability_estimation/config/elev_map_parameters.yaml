@@ -1,0 +1,53 @@
+# Robot.
+map_frame_id:                               H01/map
+robot_base_frame_id:                        H01/base_link
+robot_pose_with_covariance_topic:           /H01_pose_stamped
+robot_pose_cache_size:                      200
+track_point_frame_id:                       H01/base_link
+track_point_x:                              0.0
+track_point_y:                              0.0 
+track_point_z:                              0.0
+min_update_rate:                            3.0
+time_tolerance:                             1.0
+time_offset_for_point_cloud:                0.1
+sensor_processor/ignore_points_above:       0.4
+robot_motion_map_update/covariance_scale:   0.01
+
+input_sources:
+  front: 
+    type: pointcloud
+    topic: /ground_segmentation/ground_cloud
+    queue_size: 5
+    publish_on_update: false # whether to publish an elevation map after callback
+    sensor_processor:
+      type: laser
+      min_radius: 0.05
+      beam_angle: 0.0006
+      beam_constant: 0.0015
+
+# Map.
+length_in_x:                                12.0
+length_in_y:                                12.0
+position_x:                                 0.0
+position_y:                                 0.0
+resolution:                                 0.10
+min_variance:                               0.0001
+max_variance:                               0.05
+mahalanobis_distance_threshold:             2.5
+multi_height_noise:                         0.001
+surface_normal_positive_axis:               z
+fused_map_publishing_rate:                  2.0
+enable_visibility_cleanup:                  true
+visibility_cleanup_rate:                    1.0
+scanning_duration:                          0.05
+relocate_rate:                              5.0
+num_callback_threads:                       2
+
+# Init submap
+initialize_elevation_map:                   false
+initialization_method:                      0
+length_in_x_init_submap:                    1.0
+length_in_y_init_submap:                    1.0
+margin_init_submap:                         0.3
+init_submap_height_offset:                  0.01
+target_frame_init_submap:                   H01/base_link
